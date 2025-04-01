@@ -1,11 +1,13 @@
 "use strict";
 
 {
-	C3.Plugins.Rex_CSV = class Rex_CSVPlugin extends C3.SDKPluginBase
+    const C3 = globalThis.C3;
+    
+	C3.Plugins.Rex_CSV = class Rex_CSVPlugin extends globalThis.ISDKPluginBase
 	{
-		constructor(opts)
+		constructor()
 		{
-			super(opts);
+			super();
                         (function ()
             {
                 C3.Plugins.Rex_CSV.CSVKlass = function(plugin)
@@ -238,31 +240,21 @@
                 
                 CSVKlassProto.ForEachCol = function ()
                 {   
-                    var current_frame = this.plugin._runtime.GetEventSheetManager().GetCurrentEventStackFrame();
-                    var current_event = current_frame.GetCurrentEvent();
-                    var solmod = current_event.GetSolModifiers();
-                    var solModifierAfterCnds = current_frame.IsSolModifierAfterCnds();
-                    var c = this.plugin._runtime.GetEventSheetManager().GetEventStack();
-                    var p = this.plugin._runtime.GetEventStack(); 
-                    var h = c.Push(current_event);
-                            
                     this.forCol = "";
-                    
                     var keys = this.keys;
                     var key_cnt = keys.length;
-                    var i;
-                    for (i=0; i<key_cnt; i++ )
+
+                    const loopCtx = this.plugin.runtime.sdk.createLoopingConditionContext();
+                    for(let i = 0; i < key_cnt; ++i)
                     {
-                        if (solModifierAfterCnds)
-                            this.plugin._runtime.GetEventSheetManager().PushCopySol(solmod);
-                            
-                        this.forCol = keys[i];              
-                        current_event.Retrigger(current_frame,h);
-                            
-                        if (solModifierAfterCnds)
-                            this.plugin._runtime.GetEventSheetManager().PopSol(solmod);
+                        this.forCol = keys[i];
+                        loopCtx.retrigger();
+
+                        if (loopCtx.isStopped)
+                            break;
                     }
-                    p.Pop();
+
+                    loopCtx.release();
                     this.forCol = "";
                 };
 
@@ -277,59 +269,26 @@
                     this.forCol = col;
                         
                     // current_cell is valid
-                    var current_frame = this.plugin._runtime.GetEventSheetManager().GetCurrentEventStackFrame();
-                    var current_event = current_frame.GetCurrentEvent();
-                    var solmod = current_event.GetSolModifiers();
-                    var solModifierAfterCnds = current_frame.IsSolModifierAfterCnds();
-                    var c = this.plugin._runtime.GetEventSheetManager().GetEventStack();
-                    var p = this.plugin._runtime.GetEventStack(); 
-                    var h = c.Push(current_event);
-
-                    this.forRow = "";
-                    
-                    var items = this.items;
-                    var item_cnt = items.length;
-                    var i;
-                    for (i=0; i<item_cnt; i++ )
-                    {
-                        if (solModifierAfterCnds)
-                            this.plugin._runtime.GetEventSheetManager().PushCopySol(solmod);
-
-                        this.forRow = items[i];             
-                        current_event.Retrigger(current_frame,h);
-
-                        if (solModifierAfterCnds)
-                            this.plugin._runtime.GetEventSheetManager().PopSol(solmod);
-                    }
-                    p.Pop();
-                    this.forRow = "";
+                    this.ForEachRow();
                 };   
                 
                 CSVKlassProto.ForEachRow = function ()
                 {   
-                    var current_frame = this.plugin._runtime.GetEventSheetManager().GetCurrentEventStackFrame();
-                    var current_event = current_frame.GetCurrentEvent();
-                    var solmod = current_event.GetSolModifiers();
-                    var solModifierAfterCnds = current_frame.IsSolModifierAfterCnds();
-                    var c = this.plugin._runtime.GetEventSheetManager().GetEventStack();
-                    var p = this.plugin._runtime.GetEventStack(); 
-                    var h = c.Push(current_event);
                     this.forRow = "";
-                    
                     var items = this.items;
                     var item_cnt = items.length;
-                    var i;
-                    for (i=0; i<item_cnt; i++ )
+                    
+                    const loopCtx = this.plugin.runtime.sdk.createLoopingConditionContext();
+                    for(let i = 0; i < item_cnt; ++i)
                     {
-                        if (solModifierAfterCnds)
-                            this.plugin._runtime.GetEventSheetManager().PushCopySol(solmod);
-                            
-                        this.forRow = items[i];             
-                        current_event.Retrigger(current_frame,h);   
-                        if (solModifierAfterCnds)
-                            this.plugin._runtime.GetEventSheetManager().PopSol(solmod);
-                   }
-                   p.Pop();       
+                        this.forRow = items[i]; 
+                        loopCtx.retrigger();
+
+                        if (loopCtx.isStopped)
+                            break;
+                    }
+
+                    loopCtx.release();
                     this.forRow = "";
                 }; 
 
@@ -344,33 +303,7 @@
                     this.forRow = row;
                         
                     // current_cell is valid
-                    var current_frame = this.plugin._runtime.GetEventSheetManager().GetCurrentEventStackFrame();
-                    var current_event = current_frame.GetCurrentEvent();
-                    var solmod = current_event.GetSolModifiers();
-                    var solModifierAfterCnds = current_frame.IsSolModifierAfterCnds();
-                    var c = this.plugin._runtime.GetEventSheetManager().GetEventStack();
-                    var p = this.plugin._runtime.GetEventStack(); 
-                    var h = c.Push(current_event);
-                    
-                    this.forCol = "";
-                    
-                    var keys = this.keys;
-                    var key_cnt = keys.length;
-                    var i;
-                    
-                    for (i=0; i<key_cnt; i++ )
-                    {        
-                        if (solModifierAfterCnds)        
-                            this.plugin._runtime.GetEventSheetManager().PushCopySol(solmod);
-                            
-                        this.forCol = keys[i];
-                        current_event.Retrigger(current_frame,h);
-                            
-                        if (solModifierAfterCnds)                
-                            this.plugin._runtime.GetEventSheetManager().PopSol(solmod);
-                    }
-                    p.Pop();
-                    this.forCol = "";
+                    this.ForEachCol();
                 };
                     
                 CSVKlassProto.GetColCnt = function()
@@ -602,12 +535,6 @@
                 };  
                 
             }()); 
-		}
-		
-		Release()
-		{
-			super.Release();
-
 		}
 	};
 }

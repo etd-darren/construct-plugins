@@ -1,14 +1,16 @@
 "use strict";
 
 {
-	C3.Plugins.Rex_CSV.Instance = class Rex_CSVInstance extends C3.SDKInstanceBase
+	const C3 = globalThis.C3;
+	
+	C3.Plugins.Rex_CSV.Instance = class Rex_CSVInstance extends globalThis.ISDKInstanceBase
 	{
-		constructor(inst, properties)
+		constructor()
 		{
-			super(inst);
+			super();
 			
 			// Initialise object properties
-			
+			const properties = this._getInitProperties();
 			if (properties)		// note properties may be null in some cases
 			{
 				this.strDelimiter = properties[0];
@@ -36,12 +38,12 @@
 	        /**END-PREVIEWONLY**/  
 		}
 		
-		Release()
+		_release()
 		{
-			super.Release();
+			super._release();
 		}
 		
-		SaveToJson()
+		_saveToJson()
 		{
 		    var page, tables={};
 		    for (page in this.tables)	   
@@ -57,7 +59,7 @@
 			};
 		}
 		
-		LoadFromJson(o)
+		_loadFromJson(o)
 		{
 		    var tables = o["d"], table;
 			var page;
