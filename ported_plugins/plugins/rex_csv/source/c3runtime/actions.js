@@ -1,6 +1,8 @@
 "use strict";
 
 {
+	const C3 = globalThis.C3;
+	
 	C3.Plugins.Rex_CSV.Acts =
 	{
 		LoadCSV(csv_string)

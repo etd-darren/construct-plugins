@@ -1,11 +1,13 @@
 "use strict";
 
 {
-	C3.Plugins.Rex_CSV.Type = class Rex_CSVType extends C3.SDKTypeBase
+	const C3 = globalThis.C3;
+	
+	C3.Plugins.Rex_CSV.Type = class Rex_CSVType extends globalThis.ISDKObjectTypeBase
 	{
-		constructor(objectClass)
+		constructor()
 		{
-			super(objectClass);
+			super();
 		}
 		
 		Release()
@@ -13,7 +15,7 @@
 			super.Release();
 		}
 		
-		OnCreate()
+		_onCreate()
 		{	
 		}
 	};

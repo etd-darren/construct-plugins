@@ -1,6 +1,8 @@
 "use strict";
 
 {
+	const SDK = globalThis.SDK;
+
 	const PLUGIN_CLASS = SDK.Plugins.Rex_CSV;
 
 	PLUGIN_CLASS.Instance = class Rex_CSVInstance extends SDK.IInstanceBase
