@@ -68,7 +68,9 @@
                 
                 CSVKlassProto._create_items = function(values)
                 {
-                    var item_name = values.shift();
+                    //var item_name = values.shift();
+                    // Darren: do not remove ('shift') first col item so that it matches the keys
+                    var item_name = values[0];
                     var keys = this.keys;
                     var key_cnt = this.keys.length;   
                     var table = this.table;
